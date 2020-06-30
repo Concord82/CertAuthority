@@ -11,6 +11,41 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import ldap
+from django_auth_ldap.config import LDAPSearch, LDAPSearchUnion, ActiveDirectoryGroupType
+
+AUTH_LDAP_SERVER_URI = "ldap://core1.cons.tsk.ru"
+
+AUTH_LDAP_BIND_DN = "CN=x_glpi,OU=Net_Logins,OU=Resources_and_Services,DC=cons,DC=tsk,DC=ru"
+AUTH_LDAP_BIND_PASSWORD = "regedit-0332"
+AUTH_LDAP_USER_SEARCH = LDAPSearchUnion(
+    LDAPSearch("OU=Net_Logins,OU=Resources_and_Services,DC=cons,DC=tsk,DC=ru", ldap.SCOPE_SUBTREE, "(sAMAcountName=%(user)s)"),
+    LDAPSearch("ou=CONSULTANT,dc=cons,dc=tsk,dc=ru", ldap.SCOPE_SUBTREE, "(sAMAcountName=%(user)s)"),
+)
+
+#AUTH_LDAP_START_TLS = True
+
+AUTH_LDAP_USER_ATTR_MAP = {
+    "username": "sAMAccountName",
+    "first_name": "givenName",
+    "last_name": "sn",
+    "email": "mail",
+}
+
+AUTH_LDAP_GROUP_SEARCH = LDAPSearch(
+    "OU=Net_Groups,OU=Resources_and_Services,DC=cons,DC=tsk,DC=ru", ldap.SCOPE_SUBTREE, "(objectCategory=Group)"
+)
+
+AUTH_LDAP_GROUP_TYPE = ActiveDirectoryGroupType(name_attr="cn")
+AUTH_LDAP_USER_FLAGS_BY_GROUP = {
+    "is_superuser": "CN=Domain Admins,OU=Net_Groups,OU=Resources_and_Services,DC=cons,DC=tsk,DC=ru",
+    "is_staff": "CN=Domain Admins,OU=Net_Groups,OU=Resources_and_Services,DC=cons,DC=tsk,DC=ru",
+}
+
+AUTH_LDAP_FIND_GROUP_PERMS = True
+AUTH_LDAP_CACHE_GROUPS = True
+AUTH_LDAP_GROUP_CACHE_TIMEOUT = 1  # 1 hour cache
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -101,6 +136,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+    "django_auth_ldap.backend.LDAPBackend",
+    "django.contrib.auth.backends.ModelBackend",
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
@@ -126,4 +165,12 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
     '/var/www/static/',
 )
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "loggers": {"django_auth_ldap": {"level": "DEBUG", "handlers": ["console"]}},
+}
 
