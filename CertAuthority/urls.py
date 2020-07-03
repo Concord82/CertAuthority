@@ -23,5 +23,7 @@ from portal import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('test/', views.test),
+    path('login/', views.login, name='login'),
+
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

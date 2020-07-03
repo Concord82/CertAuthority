@@ -1,15 +1,199 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hello Bulma!</title>
-    <link rel="stylesheet" href="{% static "css/mystyles.css" %}" >
-      <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-  </head>
-  <body>
-  <section class="section">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Hello Bulma!</title>
+        <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}" >
+        <link rel="stylesheet" href="{% static "fontawesome-free-5.13.1-web/css/all.css" %}">
+
+        <style>
+            main > .container {
+                padding: 60px 15px 0;
+            }
+        </style>
+
+    </head>
+    <body class="d-flex flex-column h-100">
+        <header>
+            <!-- Fixed navbar -->
+            <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+                <a class="navbar-brand" href="#">Fixed navbar</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Link</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                        </li>
+                    </ul>
+                    {% if user.is_authenticated %}
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dropdown
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+
+                        </ul>
+
+
+
+                    {% else %}
+                        <form class="form-inline mt-2 mt-md-0" method="POST" action="{% url 'login' %}">
+                             <!-- Пользователь не залогинен, выводим форму для авторизации -->
+                            {% csrf_token %}
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                </div>
+                                <input class="form-control mr-sm-2" name="username" type="text" placeholder="Username" aria-label="Username">
+                            </div>
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <i class="fas fa-key"></i>
+                                    </div>
+                                </div>
+                                <input class="form-control mr-sm-2" name="password" type="password" placeholder="Password" aria-label="Password">
+                            </div>
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Войти</button>
+
+
+                        </form>
+                    {% endif %}
+                </div>
+            </nav>
+        </header>
+
+        {% block content %}
+
+        {% endblock %}
+
+
+
+
+
+
+
+
+<!--
+
+        <nav class="navbar is-white">
+            <div class="container">
+                <div class="navbar-brand">
+                    <a class="navbar-item brand-text" href="/">
+                        Certification Authority
+                    </a>
+                </div>
+                <div class="navbar-menu">
+                    <div class="navbar-start">
+
+                    </div>
+                    <div class="navbar-end">
+                        <div class="navbar-item">
+                            <div class="dropdown">
+                                {% if user.is_authenticated %} -->
+                                    <!-- Пользователь авторизован, выводим главное меню портала доступное для админов --><!--
+                                    <div class="dropdown-trigger">
+                                        <button class="button" aria-haspopup="true" aria-controls="dropdown-menu2">
+                                            <span>Menu</span>
+                                            <span class="icon is-small">
+                                                <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <div class="dropdown-menu" id="dropdown-menu2" role="menu">
+                                        <div class="dropdown-content">
+                                            <a href="#" class="dropdown-item">
+                                                Параметры
+                                            </a>
+                                            <hr class="dropdown-divider">
+                                            <a href="{% url 'login' %}" class="dropdown-item">
+                                                Выход
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% else %} -->
+                                    <!-- Пользователь не залогинен, выводим форму для авторизации --><!--
+                                    <div class="dropdown-trigger">
+                                        <button class="button" aria-haspopup="true" aria-controls="dropdown-menu2">
+                                            <span>Log in</span>
+                                            <span class="icon is-small">
+                                                <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <div class="dropdown-menu" id="dropdown-menu2" role="menu">
+                                        <div class="dropdown-content">
+                                            <form method="POST" action="{% url 'login' %}">
+                                            <div class="dropdown-item">
+
+                                                    {% csrf_token %}
+                                                    <div class="field">
+                                                        <p class="control has-icons-left">
+                                                            <input class="input" type="email" placeholder="Email">
+                                                            <span class="icon is-small is-left">
+                                                                <i class="fas fa-envelope"></i>
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                    <div class="field">
+                                                        <p class="control has-icons-left">
+                                                            <input class="input" type="password" placeholder="Password">
+                                                            <span class="icon is-small is-left">
+                                                                <i class="fas fa-lock"></i>
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                    <div class="field">
+                                                        <div class="control">
+                                                            <button class="button is-success" type="submit">Submit</button>
+                                                        </div>
+                                                    </div>
+
+
+
+
+                                            </div></form>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+    <section class="section">
     <div class="container">
       <h1 class="title">
         Hello World
@@ -17,7 +201,59 @@
       <p class="subtitle">
         My first website with <strong>Bulma</strong>!
       </p>
+
+
+        <form method="POST" action="{% url 'login' %}">
+
+
+                                                    {% csrf_token %}
+                                                    <div class="field">
+                                                        <p class="control has-icons-left">
+                                                            <input class="input" name="username" type="text" placeholder="Username">
+                                                            <span class="icon is-small is-left">
+                                                                <i class="fas fa-envelope"></i>
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                    <div class="field">
+                                                        <p class="control has-icons-left">
+                                                            <input class="input" name="password" type="password" placeholder="Password">
+                                                            <span class="icon is-small is-left">
+                                                                <i class="fas fa-lock"></i>
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                    <div class="field">
+                                                        <div class="control">
+                                                            <button class="button is-success" type="submit">Submit</button>
+                                                        </div>
+                                                    </div>
+
+
+
+
+                                            </form>
+
     </div>
-  </section>
-  </body>
+
+
+    </section>
+    -->
+        <script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
+        <script>
+            //DOMContentLoaded - it fires when initial HTML document has been completely loaded
+            document.addEventListener('DOMContentLoaded', function () {
+                // querySelector - it returns the element within the document that matches the specified selector
+                var dropdown = document.querySelector('.dropdown');
+                    //addEventListener - attaches an event handler to the specified element.
+                    dropdown.addEventListener('click', function(event) {
+                        //event.stopPropagation() - it stops the bubbling of an event to parent elements, by preventing parent event handlers from being executed
+                        event.stopPropagation();
+
+                        //classList.toggle - it toggles between adding and removing a class name from an element
+                        dropdown.classList.toggle('is-active');
+                    });
+            });
+        </script>
+    </body>
 </html>

@@ -19,7 +19,14 @@ class Profile(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        Profile.objects.create(user=instance)
+        user_profile = Profile.objects.create(user=instance)
+        user = django_auth_ldap.backend.LDAPBackend().populate_user(instance.username)
+        if user:
+            print(user.ldap_user.attrs)
+
+            user_profile.title = user.ldap_user.attrs.get("title", [])[0]
+            user_profile.department = user.ldap_user.attrs.get("department", [])[0]
+            user_profile.save()
 
 
 @receiver(post_save, sender=User)
@@ -33,17 +40,16 @@ def populate_user_profile(sender, user=None, ldap_user=None, **kwargs):
 
     try:
         temp_profile = user.profile
+
+        bucket['title'] = ldap_user.attrs.get('title')
+        bucket['department'] = ldap_user.attrs.get('department')
+
+        for key, value in bucket.items():
+            if value:
+                setattr(user.profile, key, value[0])
+
+        user.profile.save()
     except:
-        temp_profile = Profile.objects.create(user=user)
-
-    bucket['title'] = ldap_user.attrs.get('title')
-    bucket['department'] = ldap_user.attrs.get('department')
-
-    for key, value in bucket.items():
-        if value:
-            setattr(user.profile, key, value[0].encode('utf-8'))
-
-    user.profile.save()
-
+        pass
 
 django_auth_ldap.backend.populate_user.connect(populate_user_profile)

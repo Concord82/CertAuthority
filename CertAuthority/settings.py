@@ -19,8 +19,8 @@ AUTH_LDAP_SERVER_URI = "ldap://core1.cons.tsk.ru"
 AUTH_LDAP_BIND_DN = "CN=x_glpi,OU=Net_Logins,OU=Resources_and_Services,DC=cons,DC=tsk,DC=ru"
 AUTH_LDAP_BIND_PASSWORD = "regedit-0332"
 AUTH_LDAP_USER_SEARCH = LDAPSearchUnion(
-    LDAPSearch("OU=Net_Logins,OU=Resources_and_Services,DC=cons,DC=tsk,DC=ru", ldap.SCOPE_SUBTREE, "(sAMAcountName=%(user)s)"),
-    LDAPSearch("ou=CONSULTANT,dc=cons,dc=tsk,dc=ru", ldap.SCOPE_SUBTREE, "(sAMAcountName=%(user)s)"),
+    LDAPSearch("OU=Net_Logins,OU=Resources_and_Services,DC=cons,DC=tsk,DC=ru", ldap.SCOPE_SUBTREE, "sAMAccountName=%(user)s"),
+    LDAPSearch("ou=CONSULTANT,dc=cons,dc=tsk,dc=ru", ldap.SCOPE_SUBTREE, "sAMAccountName=%(user)s"),
 )
 
 #AUTH_LDAP_START_TLS = True
@@ -38,8 +38,8 @@ AUTH_LDAP_GROUP_SEARCH = LDAPSearch(
 
 AUTH_LDAP_GROUP_TYPE = ActiveDirectoryGroupType(name_attr="cn")
 AUTH_LDAP_USER_FLAGS_BY_GROUP = {
-    "is_superuser": "CN=Domain Admins,OU=Net_Groups,OU=Resources_and_Services,DC=cons,DC=tsk,DC=ru",
-    "is_staff": "CN=Domain Admins,OU=Net_Groups,OU=Resources_and_Services,DC=cons,DC=tsk,DC=ru",
+    "is_superuser": "CN=Cert Authority User,OU=Net_Groups,OU=Resources_and_Services,DC=cons,DC=tsk,DC=ru",
+    "is_staff": "CN=Cert Authority User,OU=Net_Groups,OU=Resources_and_Services,DC=cons,DC=tsk,DC=ru",
 }
 
 AUTH_LDAP_FIND_GROUP_PERMS = True
