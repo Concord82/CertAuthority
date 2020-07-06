@@ -19,8 +19,7 @@ def login(request):
             raise PermissionDenied
             #return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-
-    return redirect('/')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def test(request):

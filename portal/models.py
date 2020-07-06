@@ -9,7 +9,6 @@ import django_auth_ldap.backend
 
 # Create your models here.
 
-
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     title = models.CharField(_('title'), max_length=64, blank=True)
@@ -51,5 +50,6 @@ def populate_user_profile(sender, user=None, ldap_user=None, **kwargs):
         user.profile.save()
     except:
         pass
+
 
 django_auth_ldap.backend.populate_user.connect(populate_user_profile)
