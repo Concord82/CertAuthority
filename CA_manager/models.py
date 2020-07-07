@@ -7,7 +7,7 @@ from cryptography.hazmat.backends import default_backend
 from django.core.exceptions import ValidationError
 
 from django.utils import timezone
-from django.utils.encoding import force_bytes
+from django.utils.encoding import force_bytes, force_text
 from django.utils.translation import gettext_lazy as _
 
 from .constants import ReasonFlags
@@ -66,10 +66,33 @@ class X509Certificat(models.Model):
         return self._x509
 
 
-
-
-
-
 class CertificationAuthorities(models.Model):
     name = models.CharField(max_length=32)
     default_set = models.BooleanField(default=False)
+
+
+class CA_Certs(X509Certificat):
+    path_length = models.IntegerField(_('длина цепочки сертификатов'))
+
+    def gen_private_key(self):
+        from cryptography.hazmat.primitives import serialization
+        from cryptography.hazmat.primitives.asymmetric import rsa
+
+        key = rsa.generate_private_key(
+            public_exponent=65537,
+            key_size=4096,
+            backend=default_backend()
+        )
+
+        self.private = key.private_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PrivateFormat.PKCS8,
+            encryption_algorithm=serialization.NoEncryption(),
+        )
+
+        public_key = key.public_key()
+
+        self.pub = public_key.public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo
+        )

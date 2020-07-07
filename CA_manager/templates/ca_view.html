@@ -5,6 +5,16 @@
             <h1 class="mt-5">Error 403 – доступ запрещен</h1>
 
             <p class="lead">Страница не найдена. Проверьте путь или воспользуйтесь поиском. </p>
+            <form class="form-inline mt-2 mt-md-0" action="{% url 'ca_manage' %}" method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Отправить</button>
+
+            </form>
+
+
+
+
         </div>
     </main>
 {% endblock %}
